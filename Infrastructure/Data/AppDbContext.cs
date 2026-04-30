@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PayBridge.Features.Contracts;
+using PayBridge.Features.Users;
 
 
 namespace PayBridge.Infrastructure.Data;
