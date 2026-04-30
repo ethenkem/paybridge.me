@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "paybridge.me",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
