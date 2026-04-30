@@ -12,6 +12,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 // builder.Services.AddOpenApi();
+// 
+Console.WriteLine($"conection string is {builder.Configuration["ConnectionStrings:DefaultConnection"]}");
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -19,7 +21,8 @@ builder.Services.AddScoped<JwtTokenService>();
 
 builder.Services.AddScoped<UserService>();
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString)
+.UseSnakeCaseNamingConvention());
 
 
 var app = builder.Build();

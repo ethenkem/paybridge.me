@@ -35,7 +35,6 @@ public class UserService
             Email = data.Email,
             Password = hashedPassword,
             FullName = data.FullName,
-            Uid = Guid.NewGuid().ToString()
         };
         this._db.Users.Add(newUser);
         await this._db.SaveChangesAsync();
