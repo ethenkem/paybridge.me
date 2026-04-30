@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PayBridge.Features.Users;
 using PayBridge.Infrastructure.Auth;
 using PayBridge.Infrastructure.Data;
 
@@ -12,9 +13,12 @@ builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+builder.Services.AddScoped<JwtTokenService>();
+
+builder.Services.AddScoped<UserService>();
+
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
-builder.Services.AddScoped<JwtTokenService>();
 
 var app = builder.Build();
 

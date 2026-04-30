@@ -8,17 +8,24 @@ namespace PayBridge.Features.Users;
 [Route("api/users")]
 public class UserController : ControllerBase
 {
-    [HttpPost]
-    public IActionResult Register(RegisterDto registerDto)
+    private readonly UserService _userService;
+    public UserController(UserService userService)
     {
-        return Ok(new ApiResponse<object>
-        {
-            success = true,
-            message = "Please verify your account with the code sent to " + registerDto.Email
-        });
+        _userService = userService;
     }
 
-    [HttpPost]
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(RegisterDto registerDto)
+    {
+        var response = await _userService.RegisterHandler(registerDto);
+        if (!response.success)
+        {
+            return BadRequest(response);
+        }
+        return Ok(response);
+    }
+
+    [HttpPost("verify-otp")]
     public IActionResult VerifyOtp()
     {
         return Ok(new ApiResponse<object>
