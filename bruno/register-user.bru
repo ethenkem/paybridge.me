@@ -10,6 +10,14 @@ post {
   auth: inherit
 }
 
+body:json {
+  {
+    "fullname":"ethenkem",
+    "email":"{{process.env.EMAIL_ADDRESS}}",
+    "password":"123456789"
+  }
+}
+
 settings {
   encodeUrl: true
   timeout: 0
