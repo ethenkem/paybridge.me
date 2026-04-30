@@ -1,0 +1,23 @@
+meta {
+  name: obtain-token
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{process.env.BASE_URL}}/api/users/obtain-token
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email":"{{process.env.EMAIL_ADDRESS}}",
+    "password":"123456789"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

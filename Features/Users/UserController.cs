@@ -25,6 +25,17 @@ public class UserController : ControllerBase
         return Ok(response);
     }
 
+    [HttpPost("obtain-token")]
+    public async Task<IActionResult> ObtainToken(LoginDto loginDto)
+    {
+        var response = await _userService.ObtainTokenHandler(loginDto);
+        if (!response.success)
+        {
+            return BadRequest(response);
+        }
+        return Ok(response);
+    }
+
     [HttpPost("verify-otp")]
     public IActionResult VerifyOtp()
     {
