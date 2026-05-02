@@ -12,13 +12,13 @@ public class AppDbContext : DbContext
 
     }
     public DbSet<Contract> Contracts => Set<Contract>();
-    public DbSet<User> Users => Set<User>();
+    public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<UserProfile>(entity =>
         {
-            entity.HasIndex(x => x.Email).IsUnique();
+            entity.HasKey(x => x.UserId);
         });
     }
 }

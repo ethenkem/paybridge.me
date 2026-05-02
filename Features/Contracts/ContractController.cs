@@ -1,31 +1,64 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
+using PayBridge.Features.Contracts.Dtos;
 using PayBridge.Shared;
 
 namespace PayBridge.Features.Contracts;
 
 [ApiController]
+[Authorize]
 [Route("api/contracts")]
 public class ContractController : ControllerBase
 {
-    [HttpPost("create")]
-    public IActionResult CreateContract()
+    private readonly ContractService _contractService;
+    public ContractController(ContractService contractService)
     {
-        return Ok(new ApiResponse<object>
+        _contractService = contractService;
+    }
+
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateContract([FromBody] CreateContractDto createContractDto)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        int userIdInt;
+        if (!int.TryParse(userId, out userIdInt))
         {
-            success = true,
-            message = "Contract created successfully",
-            data = null
-        });
+            return BadRequest(new ApiResponse<object>
+            {
+                success = false,
+                message = "Invalid user ID",
+                data = null
+            });
+        }
+        var response = await _contractService.CreateContractHandler(userIdInt, createContractDto);
+        if (!response.success)
+        {
+            return BadRequest(response);
+        }
+        return Ok(response);
     }
 
     [HttpGet("my-contracts")]
-    public IActionResult GetContract()
+    public async Task<IActionResult> GetContract()
     {
-        return Ok(new ApiResponse<object>
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        int userIdInt;
+        if (!int.TryParse(userId, out userIdInt))
         {
-            success = true,
-            message = "Contract fetched successfully",
-            data = null
-        });
+            return BadRequest(new ApiResponse<object>
+            {
+                success = false,
+                message = "Invalid user ID",
+                data = null
+            });
+        }
+        var response = await _contractService.GetContracstHandler(userIdInt);
+        if (!response.success)
+        {
+            return BadRequest(response);
+        }
+        return Ok(response);
     }
 }

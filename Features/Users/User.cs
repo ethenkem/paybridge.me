@@ -1,15 +1,25 @@
+using System.ComponentModel.DataAnnotations;
 using PayBridge.Features.Contracts;
 
 namespace PayBridge.Features.Users;
 
-public class User
+// to model the supabase user table
+public class SupabaseUser
 {
-    public int Id { get; set; }
-    public Guid PublicUid { get; set; } = Guid.NewGuid();
-    public string FullName { get; set; } = default!;
+    public Guid Id { get; set; }
     public string Email { get; set; } = default!;
-    public string Password { get; set; } = default!;
+    public UserProfile Profile { get; set; } = default!;
+}
+public class UserProfile
+{
+    public Guid UserId { get; set; }
+    public string FullName { get; set; } = default!;
+    public string Phone { get; set; } = default!;
 
+    public string? GhanaCardIdNumber { get; set; }
+    public string? GhanaCardIdFront { get; set; }
+    public string? GhanaCardIdBack { get; set; }
+    public string KycStatus { get; set; } = "pending";
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public List<Contract> Contracts { get; set; } = new();
-
 }

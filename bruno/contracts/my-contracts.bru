@@ -1,0 +1,16 @@
+meta {
+  name: my-contracts
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{BASE_URL}}/api/contracts/my-contracts
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

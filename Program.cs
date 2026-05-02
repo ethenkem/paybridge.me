@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using PayBridge.Features.Contracts;
 using PayBridge.Features.Users;
 using PayBridge.Infrastructure.Auth;
 using PayBridge.Infrastructure.Data;
@@ -20,7 +21,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddScoped<JwtTokenService>();
 
-builder.Services.AddScoped<UserService>();
+// builder.Services.AddScoped<UseUserProfileoe>();
+
+builder.Services.AddScoped<ContractService>();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString)
 .UseSnakeCaseNamingConvention());
@@ -31,17 +34,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
+            ValidateIssuer = false,
+            ValidateAudience = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = signingKey,
         }
     );
 
-builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
 
@@ -56,6 +56,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

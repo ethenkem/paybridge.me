@@ -47,66 +47,76 @@ namespace PayBridge.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("user_id");
 
+                    b.Property<Guid>("UserProfileUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_profile_user_id");
+
                     b.HasKey("Id")
                         .HasName("pk_contracts");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_contracts_user_id");
+                    b.HasIndex("UserProfileUserId")
+                        .HasDatabaseName("ix_contracts_user_profile_user_id");
 
                     b.ToTable("contracts", (string)null);
                 });
 
-            modelBuilder.Entity("PayBridge.Features.Users.User", b =>
+            modelBuilder.Entity("PayBridge.Features.Users.UserProfile", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("email");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("full_name");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("GhanaCardIdBack")
+                        .HasColumnType("text")
+                        .HasColumnName("ghana_card_id_back");
+
+                    b.Property<string>("GhanaCardIdFront")
+                        .HasColumnType("text")
+                        .HasColumnName("ghana_card_id_front");
+
+                    b.Property<string>("GhanaCardIdNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("ghana_card_id_number");
+
+                    b.Property<string>("KycStatus")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("password");
+                        .HasColumnName("kyc_status");
 
-                    b.Property<Guid>("PublicUid")
-                        .HasColumnType("uuid")
-                        .HasColumnName("public_uid");
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("phone");
 
-                    b.HasKey("Id")
-                        .HasName("pk_users");
+                    b.HasKey("UserId")
+                        .HasName("pk_user_profiles");
 
-                    b.HasIndex("Email")
-                        .IsUnique()
-                        .HasDatabaseName("ix_users_email");
-
-                    b.ToTable("users", (string)null);
+                    b.ToTable("user_profiles", (string)null);
                 });
 
             modelBuilder.Entity("PayBridge.Features.Contracts.Contract", b =>
                 {
-                    b.HasOne("PayBridge.Features.Users.User", "User")
+                    b.HasOne("PayBridge.Features.Users.UserProfile", "UserProfile")
                         .WithMany("Contracts")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserProfileUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_contracts_users_user_id");
+                        .HasConstraintName("fk_contracts_user_profiles_user_profile_user_id");
 
-                    b.Navigation("User");
+                    b.Navigation("UserProfile");
                 });
 
-            modelBuilder.Entity("PayBridge.Features.Users.User", b =>
+            modelBuilder.Entity("PayBridge.Features.Users.UserProfile", b =>
                 {
                     b.Navigation("Contracts");
                 });

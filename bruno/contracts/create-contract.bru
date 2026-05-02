@@ -1,0 +1,27 @@
+meta {
+  name: create-contract
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{BASE_URL}}/api/contracts/create
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{process.env.TOKEN}}
+}
+
+body:json {
+  {
+    "title":"Lops",
+    "description":"dd"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
