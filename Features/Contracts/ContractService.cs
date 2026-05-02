@@ -15,7 +15,7 @@ public class ContractService
         this._db = db;
     }
 
-    public async Task<ApiResponse<object>> CreateContractHandler(int userId, CreateContractDto data)
+    public async Task<ApiResponse<object>> CreateContractHandler(Guid userId, CreateContractDto data)
     {
         var exists = await _db.Contracts.AnyAsync(x => x.Title == data.Title && x.UserId == userId);
         if (exists)
@@ -43,14 +43,37 @@ public class ContractService
         };
     }
 
-    public async Task<ApiResponse<List<Contract>>> GetContracstHandler(int userId)
+    public async Task<ApiResponse<List<Contract>>> GetContracstHandler(Guid userId)
     {
-        var contracts = await _db.Contracts.Where(x => x.UserId == userId).ToListAsync();
+        var contracts = await _db.Contracts.Where(x => x.UserId == userId || x.ClientId == userId)
+                                .Include(x => x.UserProfile)
+                                .Include(x => x.ClientProfile).ToListAsync();
         return new ApiResponse<List<Contract>>
         {
             success = true,
             message = "Contracts fetched successfully",
             data = contracts,
+        };
+    }
+    public async Task<ApiResponse<object>> DeleteContractHandler(Guid userId, Guid contractId)
+    {
+        var contract = await _db.Contracts.FirstOrDefaultAsync(x => x.Id == contractId && x.UserId == userId);
+        if (contract == null)
+        {
+            return new ApiResponse<object>
+            {
+                success = false,
+                message = "Contract not found",
+                data = null,
+            };
+        }
+        _db.Contracts.Remove(contract);
+        await _db.SaveChangesAsync();
+        return new ApiResponse<object>
+        {
+            success = true,
+            message = "Contract deleted successfully",
+            data = null,
         };
     }
 }

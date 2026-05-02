@@ -22,8 +22,8 @@ public class ContractController : ControllerBase
     public async Task<IActionResult> CreateContract([FromBody] CreateContractDto createContractDto)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        int userIdInt;
-        if (!int.TryParse(userId, out userIdInt))
+        Guid userIdInt;
+        if (!Guid.TryParse(userId, out userIdInt))
         {
             return BadRequest(new ApiResponse<object>
             {
@@ -44,8 +44,8 @@ public class ContractController : ControllerBase
     public async Task<IActionResult> GetContract()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        int userIdInt;
-        if (!int.TryParse(userId, out userIdInt))
+        Guid userIdInt;
+        if (!Guid.TryParse(userId, out userIdInt))
         {
             return BadRequest(new ApiResponse<object>
             {
@@ -61,4 +61,27 @@ public class ContractController : ControllerBase
         }
         return Ok(response);
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteContract(Guid id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        Guid userIdInt;
+        if (!Guid.TryParse(userId, out userIdInt))
+        {
+            return BadRequest(new ApiResponse<object>
+            {
+                success = false,
+                message = "Invalid user ID",
+                data = null
+            });
+        }
+        var response = await _contractService.DeleteContractHandler(userIdInt, id);
+        if (!response.success)
+        {
+            return BadRequest(response);
+        }
+        return Ok(response);
+    }
+
 }
