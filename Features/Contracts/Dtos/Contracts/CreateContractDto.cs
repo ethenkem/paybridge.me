@@ -11,5 +11,4 @@ public class CreateContractDto
     [Required]
     public string Description { get; set; } = default!;
 
-    public Milestone? Milestones { get; set; }
 }

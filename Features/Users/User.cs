@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.SignalR;
 using PayBridge.Features.Contracts;
+using PayBridge.Features.Payments.Models;
 
 namespace PayBridge.Features.Users;
 
@@ -22,6 +24,8 @@ public class UserProfile
     public string KycStatus { get; set; } = "pending";
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public List<PaymentAccount>? PaymentAccounts { get; set; }
     public List<Contract> UserContracts { get; set; } = new();
 
     public List<Contract> ClientContracts { get; set; } = new();

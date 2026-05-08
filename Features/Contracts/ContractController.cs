@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;
 using PayBridge.Features.Contracts.Dtos.Contracts;
+using PayBridge.Features.Contracts.Dtos.Milestones;
 using PayBridge.Shared;
 
 namespace PayBridge.Features.Contracts;
@@ -39,6 +40,18 @@ public class ContractController : ControllerBase
         }
         return Ok(response);
     }
+
+    [HttpPost("{contractId}/add-milestone")]
+    public async Task<IActionResult> AddMilestone([FromBody] CreateMilestone createMilestone, Guid contractId)
+    {
+        var response = await _contractService.AddMilestoneHandler(contractId, createMilestone);
+        if (!response.success)
+        {
+            return BadRequest(response);
+        }
+        return Ok(response);
+    }
+
 
     [HttpGet("my-contracts")]
     public async Task<IActionResult> GetContract()

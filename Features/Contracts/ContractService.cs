@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using PayBridge.Features.Contracts.Dtos.Contracts;
+using PayBridge.Features.Contracts.Dtos.Milestones;
 using PayBridge.Infrastructure.Data;
 using PayBridge.Shared;
 
@@ -35,16 +36,41 @@ public class ContractService
         };
         this._db.Contracts.Add(newContract);
         await this._db.SaveChangesAsync();
-        // if (data.Milestones != null)
-        // {
-        // for i=0; i < data.Milestones.le
-
-        // }
         return new ApiResponse<object>
         {
             success = true,
             message = "Contract created successfully",
             data = newContract,
+        };
+    }
+
+    public async Task<ApiResponse<object>> AddMilestoneHandler(Guid contractId, CreateMilestone data)
+    {
+        var exists = await _db.Contracts.AnyAsync(x => x.Id == contractId);
+        if (!exists)
+        {
+            return new ApiResponse<object>
+            {
+                success = false,
+                message = "Contract not found",
+                data = null,
+            };
+        }
+        var newMilestone = new Milestone
+        {
+            ContractId = contractId,
+            Description = data.Description,
+            Amount = data.Amount,
+            Order = data.Order,
+            Status = MilestoneStatus.Pending,
+        };
+        this._db.Milestones.Add(newMilestone);
+        await this._db.SaveChangesAsync();
+        return new ApiResponse<object>
+        {
+            success = true,
+            message = "Milestone added successfully",
+            data = newMilestone,
         };
     }
 

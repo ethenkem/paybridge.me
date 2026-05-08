@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PayBridge.Features.Contracts;
+using PayBridge.Features.Payments.Models;
 using PayBridge.Features.Users;
 
 
@@ -12,8 +13,12 @@ public class AppDbContext : DbContext
 
     }
     public DbSet<Contract> Contracts => Set<Contract>();
-    // public DbSet<Milestone> Milestones => Set<Milestone>();
+
+    public DbSet<Milestone> Milestones => Set<Milestone>();
+
     public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
+
+    public DbSet<PaymentAccount> PaymentAccounts => Set<PaymentAccount>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
