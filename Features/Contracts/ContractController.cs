@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;
-using PayBridge.Features.Contracts.Dtos;
+using PayBridge.Features.Contracts.Dtos.Contracts;
 using PayBridge.Shared;
 
 namespace PayBridge.Features.Contracts;
@@ -55,6 +55,28 @@ public class ContractController : ControllerBase
             });
         }
         var response = await _contractService.GetContracstHandler(userIdInt);
+        if (!response.success)
+        {
+            return BadRequest(response);
+        }
+        return Ok(response);
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> UpdateContract([FromBody] UpdateContractDto updateContractDto, Guid id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        Guid userIdUid;
+        if (!Guid.TryParse(userId, out userIdUid))
+        {
+            return BadRequest(new ApiResponse<object>
+            {
+                success = false,
+                message = "Invalid user ID",
+                data = null
+            });
+        }
+        var response = await _contractService.UpdateContractHandler(userIdUid, id, updateContractDto);
         if (!response.success)
         {
             return BadRequest(response);

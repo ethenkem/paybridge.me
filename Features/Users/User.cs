@@ -21,5 +21,9 @@ public class UserProfile
     public string? GhanaCardIdBack { get; set; }
     public string KycStatus { get; set; } = "pending";
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public List<Contract> Contracts { get; set; } = new();
+    public List<Contract> UserContracts { get; set; } = new();
+
+    public List<Contract> ClientContracts { get; set; } = new();
+
 }
+

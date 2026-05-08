@@ -12,14 +12,15 @@ public class AppDbContext : DbContext
 
     }
     public DbSet<Contract> Contracts => Set<Contract>();
+    // public DbSet<Milestone> Milestones => Set<Milestone>();
     public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<UserProfile>(entity =>
-        {
-            entity.HasKey(x => x.UserId);
-        });
+        modelBuilder.ApplyConfigurationsFromAssembly(
+            typeof(AppDbContext).Assembly
+        );
+
     }
 }
 

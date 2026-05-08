@@ -1,6 +1,6 @@
-namespace PayBridge.Features.Contracts.Dtos;
+namespace PayBridge.Features.Contracts.Dtos.Contracts;
 
-public class CreateContractDto
+public class UpdateContractDto
 {
     public string Title { get; set; } = default!;
     public string Description { get; set; } = default!;

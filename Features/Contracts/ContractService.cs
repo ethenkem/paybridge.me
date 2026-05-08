@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using PayBridge.Features.Contracts.Dtos;
+using PayBridge.Features.Contracts.Dtos.Contracts;
 using PayBridge.Infrastructure.Data;
 using PayBridge.Shared;
 
@@ -35,6 +35,11 @@ public class ContractService
         };
         this._db.Contracts.Add(newContract);
         await this._db.SaveChangesAsync();
+        // if (data.Milestones != null)
+        // {
+        // for i=0; i < data.Milestones.le
+
+        // }
         return new ApiResponse<object>
         {
             success = true,
@@ -53,6 +58,51 @@ public class ContractService
             success = true,
             message = "Contracts fetched successfully",
             data = contracts,
+        };
+    }
+    public async Task<ApiResponse<object>> AcceptContractHandler(AcceptContractDto acceptContractDto)
+    {
+        var exists = await _db.Contracts.AnyAsync(x => x.Id == acceptContractDto.ContractId);
+        if (!exists)
+        {
+            return new ApiResponse<object>
+            {
+                success = false,
+                message = "Contract not found",
+                data = null
+            };
+        }
+        return new ApiResponse<object>
+        {
+            success = true,
+            message = "",
+            data = null
+        };
+    }
+    public async Task<ApiResponse<object>> UpdateContractHandler(Guid userId, Guid contractId, UpdateContractDto data)
+    {
+        var contract = await _db.Contracts.FirstOrDefaultAsync(x => x.UserId == userId && x.Id == contractId);
+        if (contract == null)
+        {
+            return new ApiResponse<object>
+            {
+                success = false,
+                message = "Contract not found",
+                data = null,
+            };
+        }
+        if (data.Title != null)
+            contract.Title = data.Title;
+        if (data.Description != null)
+            contract.Description = data.Description;
+
+        _db.Contracts.Update(contract);
+        await _db.SaveChangesAsync();
+        return new ApiResponse<object>
+        {
+            success = true,
+            message = "Contract updated successfully",
+            data = null,
         };
     }
     public async Task<ApiResponse<object>> DeleteContractHandler(Guid userId, Guid contractId)

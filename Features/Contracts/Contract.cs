@@ -1,4 +1,5 @@
 
+using System.ComponentModel.DataAnnotations.Schema;
 using PayBridge.Features.Users;
 
 namespace PayBridge.Features.Contracts;
@@ -26,8 +27,9 @@ public class Contract
     public string Description { get; set; } = default!;
 
     public ContractStatus Status { get; set; } = ContractStatus.Draft;
+    public string LinkToken { get; set; } = default!;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public List<Milestone> Milestones { get; set; } = new();
+    // public List<Milestone> Milestones { get; set; } = new();
 }
