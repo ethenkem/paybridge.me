@@ -31,5 +31,5 @@ public class Contract
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    // public List<Milestone> Milestones { get; set; } = new();
+    public List<Milestone> Milestones { get; set; } = new();
 }
