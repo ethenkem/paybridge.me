@@ -20,6 +20,7 @@ public class UserProfile
     public string? GhanaCardIdFront { get; set; }
     public string? GhanaCardIdBack { get; set; }
     public string KycStatus { get; set; } = "pending";
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public List<Contract> UserContracts { get; set; } = new();
 

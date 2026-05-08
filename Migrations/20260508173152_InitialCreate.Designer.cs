@@ -12,7 +12,7 @@ using PayBridge.Infrastructure.Data;
 namespace PayBridge.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260502213648_InitialCreate")]
+    [Migration("20260508173152_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -32,6 +32,10 @@ namespace PayBridge.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<Guid?>("ClientId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("client_id");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -41,24 +45,32 @@ namespace PayBridge.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
+                    b.Property<string>("LinkToken")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("link_token");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("title");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("user_id");
-
-                    b.Property<Guid>("UserProfileUserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
-                        .HasColumnName("user_profile_user_id");
+                        .HasColumnName("user_id");
 
                     b.HasKey("Id")
                         .HasName("pk_contracts");
 
-                    b.HasIndex("UserProfileUserId")
-                        .HasDatabaseName("ix_contracts_user_profile_user_id");
+                    b.HasIndex("ClientId")
+                        .HasDatabaseName("ix_contracts_client_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_contracts_user_id");
 
                     b.ToTable("contracts", (string)null);
                 });
@@ -109,19 +121,29 @@ namespace PayBridge.Migrations
 
             modelBuilder.Entity("PayBridge.Features.Contracts.Contract", b =>
                 {
+                    b.HasOne("PayBridge.Features.Users.UserProfile", "ClientProfile")
+                        .WithMany("ClientContracts")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_contracts_user_profiles_client_id");
+
                     b.HasOne("PayBridge.Features.Users.UserProfile", "UserProfile")
-                        .WithMany("Contracts")
-                        .HasForeignKey("UserProfileUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("UserContracts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_contracts_user_profiles_user_profile_user_id");
+                        .HasConstraintName("fk_contracts_user_profiles_user_id");
+
+                    b.Navigation("ClientProfile");
 
                     b.Navigation("UserProfile");
                 });
 
             modelBuilder.Entity("PayBridge.Features.Users.UserProfile", b =>
                 {
-                    b.Navigation("Contracts");
+                    b.Navigation("ClientContracts");
+
+                    b.Navigation("UserContracts");
                 });
 #pragma warning restore 612, 618
         }
