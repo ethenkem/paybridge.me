@@ -55,9 +55,9 @@ Once the application is running, you can explore the API using Swagger at `/swag
 
 Alternatively, use the provided **Bruno** collections located in the `/bruno` directory for local testing.
 
-## Contributing
+<!-- ## Contributing
 
-We welcome contributions! Please feel free to submit a Pull Request or open an issue for any bugs or feature requests.
+We welcome contributions! Please feel free to submit a Pull Request or open an issue for any bugs or feature requests. -->
 
 ## License
 
