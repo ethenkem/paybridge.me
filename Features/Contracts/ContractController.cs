@@ -23,33 +23,29 @@ public class ContractController : ControllerBase
     public async Task<IActionResult> CreateContract([FromBody] CreateContractDto createContractDto)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        Guid userIdInt;
-        if (!Guid.TryParse(userId, out userIdInt))
+        if (!Guid.TryParse(userId, out Guid userIdGuid))
         {
-            return BadRequest(new ApiResponse<object>
-            {
-                success = false,
-                message = "Invalid user ID",
-                data = null
-            });
+            throw new ValidationException("Invalid user ID");
         }
-        var response = await _contractService.CreateContractHandler(userIdInt, createContractDto);
-        if (!response.success)
+        var contract = await _contractService.CreateContractHandler(userIdGuid, createContractDto);
+        return Ok(new ApiResponse<Contract>
         {
-            return BadRequest(response);
-        }
-        return Ok(response);
+            success = true,
+            message = "Contract created successfully",
+            data = contract
+        });
     }
 
     [HttpPost("{contractId}/add-milestone")]
     public async Task<IActionResult> AddMilestone([FromBody] CreateMilestone createMilestone, Guid contractId)
     {
-        var response = await _contractService.AddMilestoneHandler(contractId, createMilestone);
-        if (!response.success)
+        var milestone = await _contractService.AddMilestoneHandler(contractId, createMilestone);
+        return Ok(new ApiResponse<Milestone>
         {
-            return BadRequest(response);
-        }
-        return Ok(response);
+            success = true,
+            message = "Milestone added successfully",
+            data = milestone
+        });
     }
 
 
@@ -57,66 +53,51 @@ public class ContractController : ControllerBase
     public async Task<IActionResult> GetContract()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        Guid userIdInt;
-        if (!Guid.TryParse(userId, out userIdInt))
+        if (!Guid.TryParse(userId, out Guid userIdGuid))
         {
-            return BadRequest(new ApiResponse<object>
-            {
-                success = false,
-                message = "Invalid user ID",
-                data = null
-            });
+            throw new ValidationException("Invalid user ID");
         }
-        var response = await _contractService.GetContracstHandler(userIdInt);
-        if (!response.success)
+        var contracts = await _contractService.GetContracstHandler(userIdGuid);
+        return Ok(new ApiResponse<List<Contract>>
         {
-            return BadRequest(response);
-        }
-        return Ok(response);
+            success = true,
+            message = "Contracts fetched successfully",
+            data = contracts
+        });
     }
 
     [HttpPatch("{id}")]
     public async Task<IActionResult> UpdateContract([FromBody] UpdateContractDto updateContractDto, Guid id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        Guid userIdUid;
-        if (!Guid.TryParse(userId, out userIdUid))
+        if (!Guid.TryParse(userId, out Guid userIdGuid))
         {
-            return BadRequest(new ApiResponse<object>
-            {
-                success = false,
-                message = "Invalid user ID",
-                data = null
-            });
+            throw new ValidationException("Invalid user ID");
         }
-        var response = await _contractService.UpdateContractHandler(userIdUid, id, updateContractDto);
-        if (!response.success)
+        var contract = await _contractService.UpdateContractHandler(userIdGuid, id, updateContractDto);
+        return Ok(new ApiResponse<Contract>
         {
-            return BadRequest(response);
-        }
-        return Ok(response);
+            success = true,
+            message = "Contract updated successfully",
+            data = contract
+        });
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteContract(Guid id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        Guid userIdInt;
-        if (!Guid.TryParse(userId, out userIdInt))
+        if (!Guid.TryParse(userId, out Guid userIdGuid))
         {
-            return BadRequest(new ApiResponse<object>
-            {
-                success = false,
-                message = "Invalid user ID",
-                data = null
-            });
+            throw new ValidationException("Invalid user ID");
         }
-        var response = await _contractService.DeleteContractHandler(userIdInt, id);
-        if (!response.success)
+        await _contractService.DeleteContractHandler(userIdGuid, id);
+        return Ok(new ApiResponse<object>
         {
-            return BadRequest(response);
-        }
-        return Ok(response);
+            success = true,
+            message = "Contract deleted successfully"
+        });
     }
+
 
 }

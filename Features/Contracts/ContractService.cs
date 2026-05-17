@@ -16,17 +16,12 @@ public class ContractService
         this._db = db;
     }
 
-    public async Task<ApiResponse<object>> CreateContractHandler(Guid userId, CreateContractDto data)
+    public async Task<Contract> CreateContractHandler(Guid userId, CreateContractDto data)
     {
         var exists = await _db.Contracts.AnyAsync(x => x.Title == data.Title && x.UserId == userId);
         if (exists)
         {
-            return new ApiResponse<object>
-            {
-                success = false,
-                message = "Contract with this title already exists",
-                data = null,
-            };
+            throw new ConflictException("Contract with this title already exists");
         }
         var newContract = new Contract
         {
@@ -36,25 +31,15 @@ public class ContractService
         };
         this._db.Contracts.Add(newContract);
         await this._db.SaveChangesAsync();
-        return new ApiResponse<object>
-        {
-            success = true,
-            message = "Contract created successfully",
-            data = newContract,
-        };
+        return newContract;
     }
 
-    public async Task<ApiResponse<object>> AddMilestoneHandler(Guid contractId, CreateMilestone data)
+    public async Task<Milestone> AddMilestoneHandler(Guid contractId, CreateMilestone data)
     {
         var exists = await _db.Contracts.AnyAsync(x => x.Id == contractId);
         if (!exists)
         {
-            return new ApiResponse<object>
-            {
-                success = false,
-                message = "Contract not found",
-                data = null,
-            };
+            throw new NotFoundException("Contract not found");
         }
         var newMilestone = new Milestone
         {
@@ -66,56 +51,31 @@ public class ContractService
         };
         this._db.Milestones.Add(newMilestone);
         await this._db.SaveChangesAsync();
-        return new ApiResponse<object>
-        {
-            success = true,
-            message = "Milestone added successfully",
-            data = newMilestone,
-        };
+        return newMilestone;
     }
 
-    public async Task<ApiResponse<List<Contract>>> GetContracstHandler(Guid userId)
+    public async Task<List<Contract>> GetContracstHandler(Guid userId)
     {
-        var contracts = await _db.Contracts.Where(x => x.UserId == userId || x.ClientId == userId)
+        return await _db.Contracts.Where(x => x.UserId == userId || x.ClientId == userId)
                                 .Include(x => x.UserProfile)
                                 .Include(x => x.ClientProfile).ToListAsync();
-        return new ApiResponse<List<Contract>>
-        {
-            success = true,
-            message = "Contracts fetched successfully",
-            data = contracts,
-        };
     }
-    public async Task<ApiResponse<object>> AcceptContractHandler(AcceptContractDto acceptContractDto)
+
+    public async Task AcceptContractHandler(AcceptContractDto acceptContractDto)
     {
         var exists = await _db.Contracts.AnyAsync(x => x.Id == acceptContractDto.ContractId);
         if (!exists)
         {
-            return new ApiResponse<object>
-            {
-                success = false,
-                message = "Contract not found",
-                data = null
-            };
+            throw new NotFoundException("Contract not found");
         }
-        return new ApiResponse<object>
-        {
-            success = true,
-            message = "",
-            data = null
-        };
     }
-    public async Task<ApiResponse<object>> UpdateContractHandler(Guid userId, Guid contractId, UpdateContractDto data)
+
+    public async Task<Contract> UpdateContractHandler(Guid userId, Guid contractId, UpdateContractDto data)
     {
         var contract = await _db.Contracts.FirstOrDefaultAsync(x => x.UserId == userId && x.Id == contractId);
         if (contract == null)
         {
-            return new ApiResponse<object>
-            {
-                success = false,
-                message = "Contract not found",
-                data = null,
-            };
+            throw new NotFoundException("Contract not found");
         }
         if (data.Title != null)
             contract.Title = data.Title;
@@ -124,32 +84,17 @@ public class ContractService
 
         _db.Contracts.Update(contract);
         await _db.SaveChangesAsync();
-        return new ApiResponse<object>
-        {
-            success = true,
-            message = "Contract updated successfully",
-            data = null,
-        };
+        return contract;
     }
-    public async Task<ApiResponse<object>> DeleteContractHandler(Guid userId, Guid contractId)
+
+    public async Task DeleteContractHandler(Guid userId, Guid contractId)
     {
         var contract = await _db.Contracts.FirstOrDefaultAsync(x => x.Id == contractId && x.UserId == userId);
         if (contract == null)
         {
-            return new ApiResponse<object>
-            {
-                success = false,
-                message = "Contract not found",
-                data = null,
-            };
+            throw new NotFoundException("Contract not found");
         }
         _db.Contracts.Remove(contract);
         await _db.SaveChangesAsync();
-        return new ApiResponse<object>
-        {
-            success = true,
-            message = "Contract deleted successfully",
-            data = null,
-        };
     }
 }

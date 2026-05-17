@@ -7,6 +7,8 @@ using PayBridge.Features.Payments;
 using PayBridge.Features.Users;
 using PayBridge.Infrastructure.Auth;
 using PayBridge.Infrastructure.Data;
+using PayBridge.Shared;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,7 +64,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseAuthentication();
+
 
 app.UseAuthorization();
 

@@ -3,6 +3,7 @@ using PayBridge.Features.Contracts;
 using PayBridge.Features.Payments.Dtos.Accounts;
 using PayBridge.Features.Payments.Models;
 using PayBridge.Infrastructure.Data;
+using PayBridge.Shared;
 
 namespace PayBridge.Features.Payments;
 
@@ -21,10 +22,10 @@ public class PaymentService
             .FirstOrDefaultAsync(m => m.Id == milestoneId);
 
         if (milestone == null)
-            throw new Exception("Milestone not found");
+            throw new NotFoundException("Milestone not found");
 
         if (milestone.PaymentId != null)
-            throw new Exception("Payment already triggered for this milestone");
+            throw new ValidationException("Payment already triggered for this milestone");
 
         var payment = new Payment
         {
@@ -47,16 +48,16 @@ public class PaymentService
             .FirstOrDefaultAsync(p => p.Id == paymentId);
 
         if (payment == null)
-            throw new Exception("Payment not found");
+            throw new NotFoundException("Payment not found");
 
         if (payment.Status == PaymentStatus.Released)
-            throw new Exception("Payment already released");
+            throw new ValidationException("Payment already released");
 
         var milestone = await _db.Milestones
             .FirstOrDefaultAsync(m => m.PaymentId == paymentId);
 
         if (milestone == null)
-            throw new Exception("Milestone not found for this payment");
+            throw new NotFoundException("Milestone not found for this payment");
 
         payment.Status = PaymentStatus.Released;
         payment.ReleasedAt = DateTime.UtcNow;
@@ -100,7 +101,7 @@ public class PaymentService
     {
         var account = await _db.PaymentAccounts.FirstOrDefaultAsync(a => a.Id == accountId);
         if (account == null)
-            throw new Exception("Account not found");
+            throw new NotFoundException("Account not found");
 
         if (dto.BankName != null) account.BankName = dto.BankName;
         if (dto.BankCode != null) account.BankCode = dto.BankCode;
@@ -117,9 +118,10 @@ public class PaymentService
     {
         var account = await _db.PaymentAccounts.FirstOrDefaultAsync(a => a.Id == accountId);
         if (account == null)
-            throw new Exception("Account not found");
+            throw new NotFoundException("Account not found");
 
         _db.PaymentAccounts.Remove(account);
         await _db.SaveChangesAsync();
     }
+
 }
