@@ -20,6 +20,8 @@ public class PaymentAccount
 
     public string BankCode { get; set; } = default!;
 
+    public string AccountName { get; set; } = default!;
+
     public string AccountNumber { get; set; } = default!;
 
     public decimal AccountBalance { get; set; } = default!;
