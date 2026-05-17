@@ -1,0 +1,28 @@
+meta {
+  name: add-account
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/payment/accounts/:userId
+  body: json
+  auth: bearer
+}
+
+params:path {
+  userId: 
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "bankName": "Sample Bank",
+    "bankCode": "SB001",
+    "accountName": "John Doe",
+    "accountNumber": "1234567890"
+  }
+}

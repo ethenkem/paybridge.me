@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PayBridge.Features.Contracts;
+using PayBridge.Features.Payments.Dtos.Accounts;
 using PayBridge.Features.Payments.Models;
 using PayBridge.Infrastructure.Data;
 
@@ -65,5 +66,60 @@ public class PaymentService
         await _db.SaveChangesAsync();
 
         return payment;
+    }
+
+    // Account Management
+    public async Task<List<PaymentAccount>> GetAccounts(Guid userId)
+    {
+        return await _db.PaymentAccounts
+            .Where(a => a.userId == userId)
+            .ToListAsync();
+    }
+
+    public async Task<PaymentAccount> AddAccount(Guid userId, CreateAccountDto dto)
+    {
+        var account = new PaymentAccount
+        {
+            Id = Guid.NewGuid(),
+            userId = userId,
+            BankName = dto.BankName,
+            BankCode = dto.BankCode,
+            AccountName = dto.AccountName,
+            AccountNumber = dto.AccountNumber,
+            AccountBalance = 0,
+            IsActive = true
+        };
+
+        _db.PaymentAccounts.Add(account);
+        await _db.SaveChangesAsync();
+
+        return account;
+    }
+
+    public async Task<PaymentAccount> UpdateAccount(Guid accountId, UpdateAccountDto dto)
+    {
+        var account = await _db.PaymentAccounts.FirstOrDefaultAsync(a => a.Id == accountId);
+        if (account == null)
+            throw new Exception("Account not found");
+
+        if (dto.BankName != null) account.BankName = dto.BankName;
+        if (dto.BankCode != null) account.BankCode = dto.BankCode;
+        if (dto.AccountName != null) account.AccountName = dto.AccountName;
+        if (dto.AccountNumber != null) account.AccountNumber = dto.AccountNumber;
+        if (dto.IsActive != null) account.IsActive = dto.IsActive.Value;
+
+        await _db.SaveChangesAsync();
+
+        return account;
+    }
+
+    public async Task DeleteAccount(Guid accountId)
+    {
+        var account = await _db.PaymentAccounts.FirstOrDefaultAsync(a => a.Id == accountId);
+        if (account == null)
+            throw new Exception("Account not found");
+
+        _db.PaymentAccounts.Remove(account);
+        await _db.SaveChangesAsync();
     }
 }

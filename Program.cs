@@ -28,6 +28,8 @@ builder.Services.AddScoped<ContractService>();
 builder.Services.AddScoped<PaymentService>();
 
 
+
+
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString)
 .UseSnakeCaseNamingConvention());
 
