@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PayBridge.Features.Contracts;
+using PayBridge.Features.Payments;
 using PayBridge.Features.Users;
 using PayBridge.Infrastructure.Auth;
 using PayBridge.Infrastructure.Data;
@@ -24,6 +25,8 @@ builder.Services.AddScoped<JwtTokenService>();
 // builder.Services.AddScoped<UseUserProfileoe>();
 
 builder.Services.AddScoped<ContractService>();
+builder.Services.AddScoped<PaymentService>();
+
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString)
 .UseSnakeCaseNamingConvention());

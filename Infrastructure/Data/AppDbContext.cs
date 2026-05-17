@@ -19,6 +19,8 @@ public class AppDbContext : DbContext
     public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
 
     public DbSet<PaymentAccount> PaymentAccounts => Set<PaymentAccount>();
+    public DbSet<Payment> Payments => Set<Payment>();
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,3 +1,5 @@
+using PayBridge.Features.Payments.Models;
+
 namespace PayBridge.Features.Contracts;
 
 public enum MilestoneStatus
@@ -20,6 +22,6 @@ public class Milestone
 
     public MilestoneStatus Status { get; set; }
     public DateTime? ReleasedAt { get; set; }
-
-
+    public Guid? PaymentId { get; set; }
+    public Payment? Payment { get; set; }
 }
