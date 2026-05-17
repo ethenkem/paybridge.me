@@ -2,20 +2,23 @@
 
 PayBridge is a modern, transparent payment gateway designed for freelancers and clients to manage contracts, milestones, and fund releases with absolute clarity and security.
 
+> [!IMPORTANT]
+> **Migration Notice**: The platform has recently migrated from a custom JWT authentication system to **Supabase Auth**. If you are upgrading from an older version, please ensure you update your `.env` or `appsettings.json` with the new Supabase credentials and run the latest database migrations.
+
 ## Core Features
 
 - **🛡️ Escrowed Milestones**: Link project milestones directly to payments. Funds are held securely and released only when work is approved.
 - **📝 Contract Management**: Create, sign, and track professional agreements with ease.
 - **🏦 Multi-Account Support**: Manage multiple bank accounts for flexible fund settlement.
 - **⚡ Real-time Updates**: Track payment statuses from "Pending" to "Released" in real-time.
-- **🔒 Secure by Design**: Built with modern security standards using JWT-based authentication.
+- **🔒 Secure by Design**: Built with modern security standards using **Supabase Authentication** for robust user management and identity verification.
 
 ## Tech Stack
 
 - **Backend**: .NET 10 Web API
 - **ORM**: Entity Framework Core
 - **Database**: PostgreSQL (Npgsql)
-- **Authentication**: JWT Bearer Tokens
+- **Authentication**: Supabase Auth (JWT Bearer compatible)
 - **Documentation**: Swagger/OpenAPI
 - **Testing**: Bruno API Collection
 
@@ -35,7 +38,7 @@ PayBridge is a modern, transparent payment gateway designed for freelancers and 
    ```
 
 2. **Configure Environment**:
-   Update `appsettings.json` or create a `.env` file with your database connection string and JWT settings.
+   Update `appsettings.json` or create a `.env` file with your database connection string and **Supabase settings** (URL and Anon/Service Key).
 
 3. **Database Setup**:
    Run the following command to apply migrations and create the database schema:
